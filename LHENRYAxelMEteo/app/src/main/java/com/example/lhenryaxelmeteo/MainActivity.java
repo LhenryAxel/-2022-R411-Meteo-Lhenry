@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String s = weather.getWindDirection();
         txtTemperature.setText("Température : " + String.valueOf(weather.getTemperature()));
         txtHumidity.setText("Humidité : " + String.valueOf(weather.getHumidity()));
-        txtWindDirection.setText("Vitesse du vent : " + weather.getWindDirection());
-        txtWindSpeed.setText("Direction du vent : " + String.valueOf(weather.getWindSpeed()));
+        txtWindDirection.setText("Vitesse du vent : " + weather.getWindSpeed());
+        txtWindSpeed.setText("Direction du vent : " + String.valueOf(weather.getWindDirection()));
         txtPrecipitation.setText("Précipitations : " + String.valueOf(weather.getPrecipitation()));
         txtDate.setText(realDay(weather.getDay(), weather.getHour()));
 
@@ -189,6 +189,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         txtCoords2.setText(GeoLocFormat.longitudeDMS(currentLocation.getLongitude()));
     }
 
+    /**
+     * Initializes the localisation
+     */
     @SuppressLint("MissingPermission")
     private void initLocation(){
         LocationManager manager =
@@ -196,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
     }
 
+    /**
+     * Update the localisation
+     * @param location
+     */
     @Override
     public void onLocationChanged(@NonNull android.location.Location location) {
         currentLocation.setLongitude((float) location.getLongitude());
@@ -203,6 +210,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         ShowLocation(currentLocation);
     }
 
+    /**
+     * Get the real Date
+     * @param day
+     * @param hour
+     * @return
+     */
     private String realDay(int day, int hour){
         Calendar c = Calendar.getInstance();
         DateFormat df = DateFormat.getDateInstance(DateFormat.FULL,
@@ -215,7 +228,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
 
-
+    /**
+     * Ask for permission for localisation
+     * @param requestCode
+     * @param permissions
+     * @param results
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[]
             permissions, int[] results) {
