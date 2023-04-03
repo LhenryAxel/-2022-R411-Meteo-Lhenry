@@ -60,12 +60,12 @@
 
     <TextView
         android:id="@+id/txtDate"
-        android:layout_width="312dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="212dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="24dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.306"
         app:layout_constraintStart_toEndOf="@+id/txtCoords1"
         app:layout_constraintTop_toBottomOf="@+id/editTown" />
 
@@ -143,14 +143,14 @@
 
     <ImageView
         android:id="@+id/imgWeather"
-        android:layout_width="327dp"
-        android:layout_height="304dp"
-        android:layout_marginTop="136dp"
+        android:layout_width="304dp"
+        android:layout_height="280dp"
         app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDate"
+        app:layout_constraintVertical_bias="0.674"
         app:srcCompat="@drawable/partial_clouded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
