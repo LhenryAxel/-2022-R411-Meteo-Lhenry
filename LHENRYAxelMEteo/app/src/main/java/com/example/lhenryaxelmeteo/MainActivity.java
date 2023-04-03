@@ -1,7 +1,14 @@
 package com.example.lhenryaxelmeteo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +17,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+
+/**
+ * MainWindow
+ */
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private ImageButton btnSearch;
     private ImageButton btnPos;
@@ -28,8 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtWindDirection;
     private TextView txtPrecipitation;
 
-    private FakeForecast forecast;
+    private int changeDay;
+    private int changeHour;
 
+    private FakeForecast forecast;
+    private WeatherForecast listForecast;
+
+    private Location currentLocation;
+
+
+
+    /**
+     * Constructor
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,33 +79,149 @@ public class MainActivity extends AppCompatActivity {
 
 
         btnSearch.setOnClickListener(this::OnClickSearch);
+        btnPos.setOnClickListener(this::OnClickPosition);
+        btnNext.setOnClickListener(this::OnClickNext);
+        btnPrevious.setOnClickListener(this::OnClickPrevious);
 
         forecast = new FakeForecast();
-        
-        
+
+        currentLocation = new Location();
     }
 
+    /**
+     * On click determinate the position
+     * @param view
+     */
+    private void OnClickPosition(View view) {
+        int ret = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if( ret == PackageManager.PERMISSION_GRANTED) {
+            initLocation();
+        }
+        else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},100);
+        }
+    }
+
+    /**
+     * On click search the forecast
+     * @param view
+     */
     private void OnClickSearch(View view) {
-        Location l = new Location();
-        l.setCity(editVille.toString());
-        l.setLatitude((float) 47.311);
-        l.setLongitude((float) 5.069);
-        ShowLocation(l);
-        ShowWeather(forecast.getForecast(l).getForecast(0));
+        currentLocation.setCity(editVille.toString());
+        currentLocation.setLatitude((float) 47.311);
+        currentLocation.setLongitude((float) 5.069);
+        ShowLocation(currentLocation);
+        listForecast = forecast.getForecast(currentLocation);
+        changeDay = 0;
+        ShowWeather(listForecast.getForecast(changeDay));
     }
 
+    /**
+     * Show the weather given in parameters
+     * @param weather given weather
+     */
     private void ShowWeather(Weather weather){
+        String s = weather.getWindDirection();
         txtTemperature.setText("Température : " + String.valueOf(weather.getTemperature()));
         txtHumidity.setText("Humidité : " + String.valueOf(weather.getHumidity()));
         txtWindDirection.setText("Vitesse du vent : " + weather.getWindDirection());
         txtWindSpeed.setText("Direction du vent : " + String.valueOf(weather.getWindSpeed()));
         txtPrecipitation.setText("Précipitations : " + String.valueOf(weather.getPrecipitation()));
-        txtDate.setText(String.valueOf(weather.getDay()));
+        txtDate.setText(realDay(weather.getDay(), weather.getHour()));
+
+        ChangeWeatherImage(weather.getWeatherCode());
+
     }
 
+    /**
+     * On click go back on previous weather
+     * @param view
+     */
+    private void OnClickPrevious(View view) {
+        if (listForecast != null){
+            if (changeDay > 0){
+                changeDay -= 1;
+            }
+            ShowWeather(listForecast.getForecast(changeDay));
+        }
+    }
+
+    /**
+     * On click go on next weather
+     * @param view
+     */
+    private void OnClickNext(View view) {
+        if (listForecast != null){
+            if (changeDay < listForecast.getSize()-1){
+                changeDay += 1;
+            }
+            ShowWeather(listForecast.getForecast(changeDay));
+        }
+    }
+
+
+
+    /**
+     * Change the picture based on the weather given
+     * @param code code of weather
+     */
+    private void ChangeWeatherImage(WeatherCodes code){
+        switch(code){
+            case CLEAR_SKY: imgWeather.setImageResource(getResources().getIdentifier("sunny","drawable",getPackageName())); break;
+            case SNOW : imgWeather.setImageResource(getResources().getIdentifier("snow","drawable",getPackageName())); break;
+            case HEAVY_RAIN: imgWeather.setImageResource(getResources().getIdentifier("rain","drawable",getPackageName())); break;
+            case SMALL_RAIN: imgWeather.setImageResource(getResources().getIdentifier("small_rain","drawable",getPackageName())); break;
+            case THUNDERSTORM: imgWeather.setImageResource(getResources().getIdentifier("thunder","drawable",getPackageName())); break;
+            case FOGGY_CLOUDED: imgWeather.setImageResource(getResources().getIdentifier("cloudy","drawable",getPackageName())); break;
+            case PARTIAL_CLOUDED: imgWeather.setImageResource(getResources().getIdentifier("partial_clouded","drawable",getPackageName())); break;
+        }
+    }
+
+    /**
+     * Show the localisation
+     * @param location
+     */
     private void ShowLocation(Location location){
         GeoLocFormat format = new GeoLocFormat();
-        txtCoords1.setText(GeoLocFormat.latitudeDMS(location.getLatitude()));
-        txtCoords2.setText(GeoLocFormat.longitudeDMS(location.getLongitude()));
+        txtCoords1.setText(GeoLocFormat.latitudeDMS(currentLocation.getLatitude()));
+        txtCoords2.setText(GeoLocFormat.longitudeDMS(currentLocation.getLongitude()));
     }
+
+    @SuppressLint("MissingPermission")
+    private void initLocation(){
+        LocationManager manager =
+                (LocationManager)getSystemService(LOCATION_SERVICE);
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull android.location.Location location) {
+        currentLocation.setLongitude((float) location.getLongitude());
+        currentLocation.setLatitude((float) location.getLatitude());
+        ShowLocation(currentLocation);
+    }
+
+    private String realDay(int day, int hour){
+        Calendar c = Calendar.getInstance();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.FULL,
+                getResources().getConfiguration().locale);
+        c.setTime(new Date());
+        c.add(Calendar.DATE, day);
+        c.set(Calendar.HOUR_OF_DAY,hour);
+        return df.format(c.getTime())+String.format(" - %02d h",
+                c.get(Calendar.HOUR_OF_DAY));
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[]
+            permissions, int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        initLocation();
+    }
+
+
 }

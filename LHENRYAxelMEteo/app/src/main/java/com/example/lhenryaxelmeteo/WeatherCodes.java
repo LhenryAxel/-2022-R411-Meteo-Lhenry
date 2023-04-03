@@ -1,6 +1,8 @@
 package com.example.lhenryaxelmeteo;
 
-
+/**
+ * Enumeration
+ */
 public enum WeatherCodes {
     CLEAR_SKY,
     PARTIAL_CLOUDED,

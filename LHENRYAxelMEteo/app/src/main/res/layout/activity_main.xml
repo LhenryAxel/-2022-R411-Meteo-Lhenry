@@ -10,9 +10,21 @@
         android:id="@+id/btnPos"
         android:layout_width="60dp"
         android:layout_height="61dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gps" />
+
+    <TextView
+        android:id="@+id/txtCoords1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPos" />
 
     <EditText
         android:id="@+id/editTown"
@@ -23,28 +35,23 @@
         android:text="Name"
         app:layout_constraintEnd_toStartOf="@+id/btnSearch"
         app:layout_constraintStart_toEndOf="@+id/btnPos"
-        tools:layout_editor_absoluteY="8dp" />
+        tools:layout_editor_absoluteY="38dp" />
 
     <ImageButton
         android:id="@+id/btnSearch"
         android:layout_width="66dp"
         android:layout_height="59dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/find" />
-
-    <TextView
-        android:id="@+id/txtCoords1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPos" />
+        app:srcCompat="@drawable/find"
+        tools:srcCompat="@drawable/find" />
 
     <TextView
         android:id="@+id/txtCoords2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
@@ -53,10 +60,11 @@
         android:id="@+id/txtDate"
         android:layout_width="312dp"
         android:layout_height="30dp"
+        android:layout_marginTop="32dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCoords1" />
+        app:layout_constraintStart_toEndOf="@+id/txtCoords1"
+        app:layout_constraintTop_toBottomOf="@+id/editTown" />
 
     <TextView
         android:id="@+id/txtHumidity"
@@ -115,7 +123,8 @@
         app:layout_constraintBottom_toTopOf="@+id/imgWeather"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDate"
-        app:srcCompat="@drawable/prev" />
+        app:srcCompat="@drawable/prev"
+        tools:srcCompat="@drawable/prev" />
 
     <ImageButton
         android:id="@+id/btnNext"
@@ -131,7 +140,8 @@
         android:layout_width="324dp"
         android:layout_height="328dp"
         app:layout_constraintBottom_toTopOf="@+id/txtTemperature"
-        app:srcCompat="@drawable/partial_clouded"
-        tools:layout_editor_absoluteX="44dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/partial_clouded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
